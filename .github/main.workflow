@@ -17,7 +17,7 @@ action "GitHub Action for Docker" {
 action "Docker Tag" {
   uses = "actions/docker/tag@86ff551d26008267bb89ac11198ba7f1d807b699"
   needs = ["GitHub Action for Docker"]
-  args = "--env --no-latest --no-sha test_image docker.pkg.github.com/ubergesundheit/actions_test/test_image"
+  args = "--env --latest=false --sha=false test_image docker.pkg.github.com/ubergesundheit/actions_test/test_image"
 }
 
 action "Push image" {
