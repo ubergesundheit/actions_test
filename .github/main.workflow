@@ -16,5 +16,5 @@ action "build container" {
 action "push container image" {
   uses = "actions/docker/cli@86ff551d26008267bb89ac11198ba7f1d807b699"
   needs = ["authenticate at registry", "build container"]
-  args = "push $IMAGE_REF"
+  args = "push docker.pkg.github.com/ubergesundheit/actions_test/test_image:master"
 }
