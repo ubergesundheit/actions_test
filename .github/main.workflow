@@ -1,27 +1,20 @@
 workflow "Build container & push to GitHub Registry" {
   on = "push"
-  resolves = ["Push image"]
+  resolves = ["push container image"]
 }
 
-action "Docker Registry" {
+action "authenticate at registry" {
   uses = "actions/docker/login@86ff551d26008267bb89ac11198ba7f1d807b699"
   secrets = ["DOCKER_PASSWORD", "DOCKER_REGISTRY_URL", "DOCKER_USERNAME"]
 }
 
-action "GitHub Action for Docker" {
+action "build container" {
   uses = "actions/docker/cli@86ff551d26008267bb89ac11198ba7f1d807b699"
-  needs = ["Docker Registry"]
-  args = "build -t test_image ."
+  args = "build -t docker.pkg.github.com/ubergesundheit/actions_test/test_image:master ."
 }
 
-action "Docker Tag" {
-  uses = "actions/docker/tag@86ff551d26008267bb89ac11198ba7f1d807b699"
-  needs = ["GitHub Action for Docker"]
-  args = ["test_image", "docker.pkg.github.com/ubergesundheit/actions_test/test_image", "--env", "--latest=false", "--sha=false"]
-}
-
-action "Push image" {
+action "push container image" {
   uses = "actions/docker/cli@86ff551d26008267bb89ac11198ba7f1d807b699"
-  needs = ["Docker Tag"]
+  needs = ["authenticate at registry", "build container"]
   args = "push $IMAGE_REF"
 }
